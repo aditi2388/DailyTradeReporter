@@ -1,0 +1,5 @@
+Entity,Buy/Sell,AgreedFx,Currency,InstructionDate,SettlementDate,Units,Price,per,unit
+foo,B,0.50,SGP,01 Jan 2018,02 Jan 2018,20,2
+bar,S,0.25,AED,05 Jan 2018,07 Jan 2018,10,5
+foo,B,0.25,SGP,01 Jan 2018,02 Jan 2018,20,10
+Samsung,B,0.50,INR,01 Jan 2018,02 Jan 2018,3,25

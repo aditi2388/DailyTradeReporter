@@ -12,10 +12,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +30,13 @@ public class TradeServiceImpl implements TradeService {
 	private static final Logger LOG = LoggerFactory.getLogger(TradeServiceImpl.class);
 
 	@Override
-	public List<Trade> getTradesList() {
+	public List<Trade> getTradesList(String fileName) {
 		List<Trade> trades = new ArrayList<Trade>();
 		String line = "";
 		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
 		try {
 			FileReader reader = new FileReader(
-					new File(getClass().getClassLoader().getResource("trade_input.txt").getFile()));
+					new File(getClass().getClassLoader().getResource(fileName).getFile()));
 			BufferedReader br = new BufferedReader(reader);
 			br.readLine(); // skipping the header
 			while ((line = br.readLine()) != null) {
@@ -53,15 +55,15 @@ public class TradeServiceImpl implements TradeService {
 					trades.add(trade);
 
 				} else {
-					LOG.error("Invalid Trade, so skipping it.");
+					LOG.error("This is an Invalid Trade Entry, hence skipping it.");
 					continue;
 				}
 			}
 			br.close();
 		} catch (IOException | ParseException e) {
 			LOG.error("Invalid Input File..");
+			System.exit(1);
 		}
-		LOG.info("List of trades: ", trades.toString());
 		return trades;
 	}
 
@@ -169,7 +171,7 @@ public class TradeServiceImpl implements TradeService {
 
 		// Ranking for outgoing entities based on their total outgoing amount
 
-		Map<String, BigDecimal> entityOutgoing = new TreeMap<String, BigDecimal>((Collections.reverseOrder()));
+		Map<String, BigDecimal> entityOutgoing = new HashMap<String, BigDecimal>();
 
 		for (Trade trade : outgoing) {
 			BigDecimal amount = entityOutgoing.get(trade.getEntity());
@@ -181,16 +183,18 @@ public class TradeServiceImpl implements TradeService {
 			}
 		}
 		
+		Map<String, BigDecimal> sortedOutgoingMap = sortMap(entityOutgoing);
+		
 		System.out.println("Ranking for incoming entities based on their total outgoing amount\n");
 
 		int outRank = 1;
-		for (Entry<String, BigDecimal> entry : entityOutgoing.entrySet()) {
+		for (Entry<String, BigDecimal> entry : sortedOutgoingMap.entrySet()) {
 			System.out.format("%s %s %s USD \n\n", outRank++, entry.getKey(), entry.getValue(), "");
 		}
 
 		// Ranking for incoming entities based on their total incoming amount
 
-		Map<String, BigDecimal> entityincoming = new TreeMap<String, BigDecimal>((Collections.reverseOrder()));
+		Map<String, BigDecimal> entityincoming = new HashMap<String, BigDecimal>();
 
 		for (Trade trade : incoming) {
 			BigDecimal amount = entityincoming.get(trade.getEntity());
@@ -202,12 +206,24 @@ public class TradeServiceImpl implements TradeService {
 			}
 		}
 		
+		Map<String, BigDecimal> sortedIncomingMap = sortMap(entityincoming);
+		
 		System.out.println("Ranking for incoming entities based on their total incoming amount\n\n");
 
 		int intRank = 1;
-		for (Entry<String, BigDecimal> entry : entityincoming.entrySet()) {
+		for (Entry<String, BigDecimal> entry : sortedIncomingMap.entrySet()) {
 			System.out.format("%s %s %s USD \n", intRank++, entry.getKey(), entry.getValue(), "");
 		}
+
+	}
+	
+	private Map<String,BigDecimal> sortMap(Map<String,BigDecimal> map){
+		Map<String,BigDecimal> sorted = map.entrySet().
+				stream()
+				.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+				                 LinkedHashMap::new));
+		return sorted;
 
 	}
 }

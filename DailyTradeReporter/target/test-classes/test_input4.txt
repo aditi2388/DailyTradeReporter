@@ -1,0 +1,8 @@
+Entity,Buy/Sell,AgreedFx,Currency,InstructionDate,SettlementDate,Units,Price,per,unit
+foo,B,0.50,SGP,01 Jan 2018,02 Jan 2018,20,2
+bar,S,0.25,AED,05 Jan 2018,07 Jan 2018,10,5
+foo,B,0.25,SGP,01 Jan 2018,02 Jan 2018,20,10
+Samsung,B,0.50,INR,01 Jan 2018,03 Jan 2018,3,25
+Apple,B,0.25,AED,01 Jan 2018,04 Jan 2018,2,125
+Amazon,S,1.00,USD,03 Jan 2018,06 Jan 2018,3,40
+Vodafone,B,0.75,SAR,02  2018, 05 Jan 2018,100,50

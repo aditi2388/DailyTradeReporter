@@ -18,14 +18,18 @@ public class TradeServiceImplTest {
 	
 	static List<Trade> tradesList = new ArrayList<Trade>();
 	
+	static String test_input1 = "test_input1.txt";
+	
+	static String test_input3 = "test_input3.txt";
+	
 	@BeforeClass
 	public static void setup() {
-		tradesList = tradeService.getTradesList();
+		tradesList = tradeService.getTradesList(test_input1);
 	}
 
 	@Test
 	public void testGetTradeList() {
-		List<Trade> trades = tradeService.getTradesList();
+		List<Trade> trades = tradeService.getTradesList(test_input1);
 		Assert.assertNotNull(trades);
 		Assert.assertEquals(trades.size(), 2);
 	}
@@ -42,11 +46,12 @@ public class TradeServiceImplTest {
 	
 	@Test
 	public void testFixSettlementDate() {
+		List<Trade> trades = tradeService.getTradesList(test_input1);
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(tradesList.get(0).getSettlementDate());
-		System.out.println("Trades: "+ tradesList.toString());
+		cal.setTime(trades.get(0).getSettlementDate());
+		System.out.println("Trades: "+ trades.toString());
 		Assert.assertEquals(cal.get(Calendar.DAY_OF_WEEK), Calendar.SATURDAY);
-		tradesList = tradeService.fixSettlementDate(tradeService.getTradesList());
+		tradesList = tradeService.fixSettlementDate(tradeService.getTradesList(test_input1));
 		System.out.println("Trades: "+ tradesList.toString());
 		cal.setTime(tradesList.get(0).getSettlementDate());
 		Assert.assertEquals(cal.get(Calendar.DAY_OF_WEEK), Calendar.MONDAY);
@@ -54,7 +59,7 @@ public class TradeServiceImplTest {
 	
 	@Test
 	public void testpopulateBuySellTrades(){
-		List<Trade> trades = tradeService.getTradesList();
+		List<Trade> trades = tradeService.getTradesList(test_input1);
 		trades = tradeService.calculateIntOutAmt(trades);
 		trades = tradeService.fixSettlementDate(trades);
 		Map<Character, List<Trade>> map = tradeService.populateBuySellTrades(trades);
@@ -64,7 +69,7 @@ public class TradeServiceImplTest {
 	
 	@Test
 	public void testPrintTotalIncomingAmt() {
-		List<Trade> trades = tradeService.getTradesList();
+		List<Trade> trades = tradeService.getTradesList(test_input1);
 		trades = tradeService.calculateIntOutAmt(trades);
 		trades = tradeService.fixSettlementDate(trades);
 		Map<Character, List<Trade>> map = tradeService.populateBuySellTrades(trades);
@@ -74,7 +79,7 @@ public class TradeServiceImplTest {
 
 	@Test
 	public void testPrintTotalOutgoingAmt() {
-		List<Trade> trades = tradeService.getTradesList();
+		List<Trade> trades = tradeService.getTradesList(test_input1);
 		trades = tradeService.calculateIntOutAmt(trades);
 		trades = tradeService.fixSettlementDate(trades);
 		Map<Character, List<Trade>> map = tradeService.populateBuySellTrades(trades);
@@ -83,12 +88,11 @@ public class TradeServiceImplTest {
 	
 	@Test
 	public void testPrintRankingReport() {
-		List<Trade> trades = tradeService.getTradesList();
+		List<Trade> trades = tradeService.getTradesList(test_input3);
 		trades = tradeService.calculateIntOutAmt(trades);
 		trades = tradeService.fixSettlementDate(trades);
 		Map<Character, List<Trade>> map = tradeService.populateBuySellTrades(trades);
 		tradeService.printRankingReport(map);
 	}
-
-
+	
 }

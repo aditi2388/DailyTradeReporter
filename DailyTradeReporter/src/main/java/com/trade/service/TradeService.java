@@ -7,7 +7,7 @@ import com.trade.model.Trade;
 
 public interface TradeService {
 	
-	public List<Trade> getTradesList();
+	public List<Trade> getTradesList(String fileName);
 
 	public void printTotalIncomingAmt(List<Trade> trades);
 	
