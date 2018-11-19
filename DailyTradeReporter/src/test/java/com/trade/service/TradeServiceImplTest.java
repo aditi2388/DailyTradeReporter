@@ -20,8 +20,6 @@ public class TradeServiceImplTest {
 	
 	static String test_input1 = "test_input1.txt";
 	
-	static String test_input3 = "test_input3.txt";
-	
 	@BeforeClass
 	public static void setup() {
 		tradesList = tradeService.getTradesList(test_input1);
@@ -31,14 +29,13 @@ public class TradeServiceImplTest {
 	public void testGetTradeList() {
 		List<Trade> trades = tradeService.getTradesList(test_input1);
 		Assert.assertNotNull(trades);
-		Assert.assertEquals(trades.size(), 2);
+		Assert.assertEquals(trades.size(), 3);
 	}
 	
 	
 	@Test
 	public void testcalculateIntOutAmt() {
 	tradesList = tradeService.calculateIntOutAmt(tradesList);
-	System.out.println("Trades: "+ tradesList.toString());
 	Assert.assertEquals(tradesList.get(0).getBuyOrSell(), 'B');
 	Assert.assertNotNull(tradesList.get(0).getOutAmt());
 	Assert.assertNull(tradesList.get(0).getIntAmt());
@@ -49,10 +46,8 @@ public class TradeServiceImplTest {
 		List<Trade> trades = tradeService.getTradesList(test_input1);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(trades.get(0).getSettlementDate());
-		System.out.println("Trades: "+ trades.toString());
 		Assert.assertEquals(cal.get(Calendar.DAY_OF_WEEK), Calendar.SATURDAY);
 		tradesList = tradeService.fixSettlementDate(tradeService.getTradesList(test_input1));
-		System.out.println("Trades: "+ tradesList.toString());
 		cal.setTime(tradesList.get(0).getSettlementDate());
 		Assert.assertEquals(cal.get(Calendar.DAY_OF_WEEK), Calendar.MONDAY);
 	}
@@ -88,7 +83,7 @@ public class TradeServiceImplTest {
 	
 	@Test
 	public void testPrintRankingReport() {
-		List<Trade> trades = tradeService.getTradesList(test_input3);
+		List<Trade> trades = tradeService.getTradesList(test_input1);
 		trades = tradeService.calculateIntOutAmt(trades);
 		trades = tradeService.fixSettlementDate(trades);
 		Map<Character, List<Trade>> map = tradeService.populateBuySellTrades(trades);
